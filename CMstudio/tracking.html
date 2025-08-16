@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CMSTUDIOS | Track Your Project</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+<style>
+  body { font-family: 'Poppins', sans-serif; background: #f0f2f5; margin:0; padding:0; }
+  header { background: #001f3f; color: #fff; padding: 40px 20px; text-align:center; }
+  header h1 { margin:0; }
+  .container { max-width: 600px; margin: 50px auto; background: #fff; padding: 30px; border-radius: 15px; box-shadow:0 5px 20px rgba(0,0,0,0.1);}
+  label { display:block; margin:15px 0 5px; font-weight:600; }
+  input { width:100%; padding:12px; border-radius:8px; border:1px solid #ccc; }
+  button { margin-top:20px; background:#ffcc00; color:#001f3f; padding:12px 25px; border:none; border-radius:30px; font-weight:bold; cursor:pointer; transition:0.3s;}
+  button:hover { background:#e6b800; }
+  .result { margin-top:30px; background:#001f3f; color:#fff; padding:20px; border-radius:12px; display:none; text-align:center; font-size:1.1rem;}
+</style>
+</head>
+<body>
+
+<header>
+  <h1>Track Your Project</h1>
+  <p>Enter your name and product code to see the current stage of your project</p>
+</header>
+
+<div class="container">
+  <label for="clientName">Your Name</label>
+  <input type="text" id="clientName" placeholder="Enter your name">
+
+  <label for="productCode">Product Code</label>
+  <input type="text" id="productCode" placeholder="Enter your product code">
+
+  <button id="trackBtn">Track My Project</button>
+
+  <div class="result" id="resultBox"></div>
+</div>
+
+<script>
+  // Example project stages
+  const stages = ["Design", "Photography", "Videography", "Editing", "Final Delivery"];
+
+  // Function to generate a weekly-changing code
+  function generateWeeklyCode(name) {
+    const weekNumber = Math.floor(new Date().getTime() / (7*24*60*60*1000));
+    // Simple hash: name + weekNumber -> random-looking code
+    let hash = 0;
+    const str = name + weekNumber;
+    for (let i=0;i<str.length;i++) { hash = (hash << 5) - hash + str.charCodeAt(i); hash |=0; }
+    return 'CMS'+Math.abs(hash).toString().slice(0,6);
+  }
+
+  document.getElementById('trackBtn').addEventListener('click', ()=>{
+    const name = document.getElementById('clientName').value.trim();
+    const code = document.getElementById('productCode').value.trim().toUpperCase();
+    if(!name || !code){
+      alert("Please enter both name and product code!");
+      return;
+    }
+
+    const expectedCode = generateWeeklyCode(name);
+    if(code === expectedCode){
+      // Random stage demo
+      const stageIndex = Math.floor(Math.random() * stages.length);
+      const stage = stages[stageIndex];
+      const box = document.getElementById('resultBox');
+      box.innerHTML = `<strong>${name}</strong>, your project is currently at: <strong>${stage}</strong>`;
+      box.style.display = 'block';
+    } else {
+      alert("Invalid product code. Make sure it matches your code for this week.");
+    }
+  });
+</script>
+
+</body>
+</html>
